@@ -16,6 +16,7 @@
 #' @param kinetics_noise_function A function that will generate noise to the kinetics of each simulation. 
 #'   It takes the `feature_info` and `feature_network` as input parameters,
 #'   modifies them, and returns them as a list. See [kinetics_noise_none()] and [kinetics_noise_simple()].
+#' @param perform_dimred Whether to perform a dimensionality reduction after simulation
 #' 
 #' @importFrom GillespieSSA2 ssa
 #' @export
@@ -54,8 +55,10 @@ generate_cells <- function(model) {
   }
   
   # perform dimred
-  if (model$verbose) cat("Performing dimred\n", sep = "")
-  model <- model %>% calculate_dimred()
+  if (model$simulation_params$perform_dimred) {
+    if (model$verbose) cat("Performing dimred\n", sep = "")
+    model <- model %>% calculate_dimred()
+  }
   
   # return
   model
@@ -76,7 +79,8 @@ simulation_default <- function(
   store_grn = FALSE,
   store_reaction_firings = FALSE,
   store_reaction_propensities = FALSE,
-  kinetics_noise_function = kinetics_noise_simple(mean = 1, sd = .005)
+  kinetics_noise_function = kinetics_noise_simple(mean = 1, sd = .005),
+  perform_dimred = TRUE
 ) {
   lst(
     burn_time,
@@ -87,7 +91,8 @@ simulation_default <- function(
     store_grn,
     store_reaction_firings,
     store_reaction_propensities,
-    kinetics_noise_function
+    kinetics_noise_function,
+    perform_dimred
   )
 }
 
