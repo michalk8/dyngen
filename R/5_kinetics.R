@@ -116,6 +116,7 @@ kinetics_default <- function(
   # calculate k
   feature_network <- 
     model$feature_network %>% 
+    select(-matches("max_protein")) %>% 
     left_join(feature_info %>% select(from = feature_id, max_protein), by = "from") %>% 
     mutate(
       effect = effect %|% params$sample_effect(n()),
