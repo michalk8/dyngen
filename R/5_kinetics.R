@@ -170,6 +170,8 @@ kinetics_default <- function(
       feature_info,
       feature_network %>% 
         rename(feature_id = to) %>% 
+        mutate(use_for_basal = if("use_for_basal" %in% names(.)) {use_for_basal} else {TRUE}) %>%
+        filter(!map_lgl(use_for_basal, isFALSE)) %>%
         group_by(feature_id) %>% 
         summarise(
           basal_2 = .kinetics_calculate_ba(effect)
@@ -266,7 +268,7 @@ kinetics_default <- function(
         
         wpr_function <- paste0(reg_affinity_calc, wpr, " * (", numerator, ")/(", denominator, ")")
       } else {
-        wpr_function <- paste0(wpr, " * ", basal)
+          wpr_function <- paste0(wpr, " * ", basal)
         regulation_var <- character()
       }
       
