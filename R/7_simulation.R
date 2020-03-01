@@ -221,7 +221,7 @@ kinetics_noise_simple <- function(mean = 1, sd = .005) {
   }
   
   # actual simulation
-  sim <- GillespieSSA2::ssa(
+  out <- GillespieSSA2::ssa(
     initial_state = new_initial_state, 
     reactions = reactions,
     final_time = total_time,
@@ -232,16 +232,8 @@ kinetics_noise_simple <- function(mean = 1, sd = .005) {
     verbose = verbose,
     log_buffer = FALSE,
     log_firings = sim_params$store_reaction_firings,
-    log_propensity = sim_params$store_reaction_propensities,
-    return_simulator = TRUE
+    log_propensity = sim_params$store_reaction_propensities
   )
-  if (debug) return(sim)
-  
-  # run simulation
-  sim$run()
-  
-  # get output
-  out <- GillespieSSA2:::return_output(sim, new_initial_state, reactions)
   
   meta <- 
     tibble(
